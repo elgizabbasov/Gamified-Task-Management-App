@@ -1,7 +1,13 @@
-from django.shortcuts import render
-from django.views.generic.list import ListView
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, filters
 
-# Create your views here.
+from .models import Task
+from .serializers import TaskSerializer
 
-def taskList(request):
-    return HttpResponse('Task Catalog')
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ("due_date", "priority", "status")
+    search_fields = ("title")
+    ordering_fields = ("due_date", "priority", "status")
